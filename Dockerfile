@@ -21,4 +21,4 @@ ENV NODE_ENV=production \
     CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
 
 EXPOSE 3000
-CMD ["pnpm", "start"]
+CMD ["bash", "./lianyu-s1-entrypoint.sh"]
