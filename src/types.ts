@@ -1,5 +1,4 @@
 import type {
-  ActionCardRawData,
   CharacterRawData,
   EntityRawData,
   KeywordRawData,
@@ -13,15 +12,15 @@ export interface AllRawData {
   keywords: KeywordRawData[];
   characters: CharacterRawData[];
   entities: EntityRawData[];
-  actionCards: ActionCardRawData[];
 }
 
 export type Language = "EN" | "CHS";
 export type Version =
-  | `v${number}.${number}.${number}${"" | `-beta`}`
-  | "latest";
+  | `v${number}.${number}.${number}${"" | `-${string}`}`
+  | "latest"
+  | "beta";
 
-export const VERSION_REGEX = /^(v\d+\.\d+\.\d+(?:-beta)?|latest)$/;
+export const VERSION_REGEX = /^(v\d+\.\d+\.\d+(?:-[\w.-]+)?|latest|beta)$/;
 
 export interface AppConfig {
   mode:
@@ -50,6 +49,15 @@ export interface AppConfig {
   codeAnalyzerResults?: CodeAnalyzerResult[];
 }
 
+export interface RenderConfig {
+  format?: "png" | "jpeg" | "webp";
+  quality?: number;
+}
+
+export interface RenderAppOption extends AppConfig {
+  render?: RenderConfig;
+}
+
 export interface ParsedCharacter extends CharacterRawData {
   parsedSkills: ParsedSkill[];
   iconUrl?: string;
@@ -62,8 +70,7 @@ export interface ParsedSkill extends SkillRawData {
 export interface ParsedEntity extends EntityRawData {
   parsedDescription: ParsedDescription;
 }
-export interface ParsedActionCard extends ActionCardRawData {
-  parsedDescription: ParsedDescription;
+export interface ParsedActionCard extends ParsedEntity {
   children: ParsedChild[];
   debugChildren: ParsedChild[];
 }
@@ -71,11 +78,7 @@ export interface ParsedKeyword extends KeywordRawData {
   type: "GCG_RULE_EXPLANATION";
   parsedDescription: ParsedDescription;
 }
-export type ParsedChild =
-  | ParsedSkill
-  | ParsedEntity
-  | ParsedActionCard
-  | ParsedKeyword;
+export type ParsedChild = ParsedSkill | ParsedEntity | ParsedKeyword;
 
 export type TokenStyle = "strong" | "light" | "dimmed";
 export type DescriptionToken =
@@ -113,16 +116,13 @@ export interface RenderContext {
   language: Language;
   skills: SkillRawData[];
   keywords: KeywordRawData[];
-  genericEntities: (EntityRawData | ActionCardRawData)[];
+  genericEntities: EntityRawData[];
   /** suppressed IDs */
   supIds: number[];
   names: Map<number, string>;
   characterToElementKeywordIdMap: Map<number, number>;
   /** Kxxx 的同名 Cxxx 或 Sxxx 条目 */
-  keywordToEntityMap: Map<
-    number,
-    SkillRawData | EntityRawData | ActionCardRawData
-  >;
+  keywordToEntityMap: Map<number, SkillRawData | EntityRawData>;
   /** 准备技能的触发角色状态 */
   prepareSkillToEntityMap: Map<number, EntityRawData>;
 }
@@ -162,10 +162,10 @@ export interface OverrideContext {
 export type BasicOverrideData<T> = T extends (infer U)[]
   ? OverrideData<U>[]
   : T extends object
-  ? (T extends { id: infer U } ? { id: U } : {}) & {
-      [K in keyof T]?: OverrideData<T[K]>;
-    }
-  : T;
+    ? (T extends { id: infer U } ? { id: U } : {}) & {
+        [K in keyof T]?: OverrideData<T[K]>;
+      }
+    : T;
 
 export type FnOverrideData<T> = (T extends { id: infer U } ? { id: U } : {}) &
   ((value: T, context: OverrideContext) => T);
@@ -173,7 +173,6 @@ export type FnOverrideData<T> = (T extends { id: infer U } ? { id: U } : {}) &
 export type OverrideData<T> = BasicOverrideData<T> | FnOverrideData<T>;
 
 export type {
-  ActionCardRawData,
   CharacterRawData,
   EntityRawData,
   KeywordRawData,

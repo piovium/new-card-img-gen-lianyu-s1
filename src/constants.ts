@@ -2,7 +2,6 @@ import type {
   Language,
   CharacterRawData,
   EntityRawData,
-  ActionCardRawData,
   OverrideData,
   AllRawData,
 } from "./types";
@@ -42,6 +41,8 @@ export const CHILDREN_CONFIG: Record<number, string> = {
   15153: "$[C115153],$[C115154],$[C115155],$[C115156]", // 伊法 Q
   15162: "$[C170]", // 雅珂达 E
   15164: "$[C115161],$[C115162],$[C115163],$[C115164],$[C115165],$[C202]", // 雅珂达 P
+  15172: "$[C115171],$[C115172],$[S15174],$[S15175]", // 法尔伽 E
+  15173: "$[C115179]", // 法尔伽 Q
   16063: "$[C116062]", // 五郎 Q
   16092: "$[C116091],$[C116092],$[C116093],$[C116095],$[C116096]", // 千织 E
   216091: "$[C116094]", // 千织 天赋
@@ -70,6 +71,7 @@ export const CHILDREN_CONFIG: Record<number, string> = {
   332032: "$[C332033],$[C332034],$[C332035]", // 幻戏倒计时
   333020: "$[C333021],$[C333022],$[C333023],$[C333024],$[C333025],$[C333026]", // 奇瑰之汤
   333027: "_", // 纵声欢唱
+  321042: "$[C301043],$[C301044],$[C301045]", // 空之神殿
 } as Record<number, string>;
 
 // 需要展示的规则解释ID
@@ -864,21 +866,19 @@ export const overrideData: OverrideData<AllRawData> = {
     //   id: 122081, // 无相之水 水晶核心 包里有专门图标非要用common ###非官方### ###可能会在未来修复###
     //   buffIcon: "UI_Gcg_Buff_EffigyWater_S",
     // }),
-  ],
-  actionCards: [
-    defineOverride<ActionCardRawData>(null, null, {
+    defineOverride<EntityRawData>(null, null, {
       id: 212111, // 芙宁娜天赋 修复引用错误
       rawDescription: (before) => before.replace("$[S12123]", "$[S12112]"),
     }),
-    defineOverride<ActionCardRawData>(null, "CHS", {
+    defineOverride<EntityRawData>(null, "CHS", {
       id: 321032, // 沉玉谷 修正一处标点样式 ###可能会在未来修复###
       rawDescription: (before) => before.replace("</color>：", "：</color>"),
     }),
-    defineOverride<ActionCardRawData>(null, null, {
+    defineOverride<EntityRawData>(null, null, {
       id: 111161, // 丝柯克 诸武相授 增加蛇之狡谋图标 ###非官方###
       rawDescription: delicateSerpentsSubtlety,
     }),
-    defineOverride<ActionCardRawData>(null, null, {
+    defineOverride<EntityRawData>(null, null, {
       id: 111163, // 丝柯克 虚境裂隙 增加蛇之狡谋图标 ###非官方###
       rawDescription: delicateSerpentsSubtlety,
     }),
