@@ -1,4 +1,5 @@
 import type { AllRawData } from "./types";
+import { isActionCard } from "./cardData";
 import { cardFaceUrl, iconUrl } from "./utils";
 import versionDiffJson from "./version-diff.json";
 
@@ -53,16 +54,8 @@ export const resolveVersionDiffTarget = (
       fromCardFace: false,
     };
   }
-  const actionCard = data.actionCards.find((c) => c.id === id);
-  if (actionCard) {
-    return {
-      name: actionCard.name,
-      imageUrl: cardFaceUrl(actionCard),
-      fromCardFace: true,
-    };
-  }
   if (entity) {
-    return entity.cardFace
+    return isActionCard(entity) || entity.cardFace
       ? {
           name: entity.name,
           imageUrl: cardFaceUrl(entity),
@@ -75,7 +68,6 @@ export const resolveVersionDiffTarget = (
 
 const findTags = (data: AllRawData, id: number): string[] =>
   data.characters.find((c) => c.id === id)?.tags ??
-  data.actionCards.find((c) => c.id === id)?.tags ??
   data.entities.find((e) => e.id === id)?.tags ??
   [];
 
